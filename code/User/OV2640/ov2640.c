@@ -44,9 +44,12 @@ u8 ov2640_jpg_photo(u8 *pname)
 			ov2640_framebuf[jpeglen]= OV2640_DATA;
 			while(OV2640_PCLK==1);  
 			jpeglen++;
-		} 
+		}        
 	}		
-	res=f_open(f_jpg,(const TCHAR*)pname,FA_WRITE|FA_CREATE_NEW);//模式0,或者尝试打开失败,则创建新文件	 
+//	for(i = 0;i < jpeglen;i++)
+//		printf("%x ",ov2640_framebuf[i]);
+	res = f_open(f_jpg,(const TCHAR*)pname,FA_WRITE|FA_CREATE_NEW);//模式0,或者尝试打开失败,则创建新文件
+	printf("res = %d\r\n",res);
 	if(res == FR_OK)
 	{
 		printf("jpeg data size:%d\r\n",jpeglen);	//串口打印JPEG文件大小
@@ -63,17 +66,26 @@ u8 ov2640_jpg_photo(u8 *pname)
 			if(bwr!=(jpeglen-i))res=0XFE; 
 			printf("拍照成功");
 		}
-	} 
+	}
+	printf("jpeglen = %d\r\n",jpeglen);	
 	f_close(f_jpg);
-	if(sim900a_gprs_send(ov2640_framebuf,10) == 1)//发送图像数据
+	for(i = 0;jpeglen - i >= 1000;i += 1000)
+		if(sim900a_gprs_send(ov2640_framebuf + i,1000) == 1)//发送图像数据
+		{
+			printf("发送成功！\r\n\r\n");
+			delay_ms(100);
+		}
+		else 		printf("发送失败！\r\n\r\n");
+	if(sim900a_gprs_send(ov2640_framebuf + i,jpeglen - i) == 1)//发送图像数据
 	{
 			printf("发送成功！\r\n\r\n");
 			delay_ms(100);
 	}
-	else 		printf("发送失败！\r\n\r\n");					
+	else 		printf("发送失败！\r\n\r\n");	
 	sim900a_gprs_link_close();//关闭连接,要等待把整个图片数组发完才关闭连接，不是发一次关一次  
 	OV2640_RGB565_Mode();	//RGB565模式 
 	myfree(SRAMIN,f_jpg); 
+	printf("link in!!!");
 	return res;
 }  
 
@@ -168,6 +180,7 @@ u8 OV2640_Init(void)
 		printf("MID:%d\r\n",reg);
 		return 1;
 	}
+	printf("MID:%d\r\n",reg);
 	reg=SCCB_RD_Reg(OV2640_SENSOR_PIDH);	//读取厂家ID 高八位
 	reg<<=8;
 	reg|=SCCB_RD_Reg(OV2640_SENSOR_PIDL);	//读取厂家ID 低八位

@@ -297,6 +297,6 @@ void Send_NMEA_MSG(nmea_msg *gpsx)
 	printf("time: %d/%d/%d ",gpsx->utc.year,gpsx->utc.month,gpsx->utc.date);   //年月日
 	printf("%d:%d:%d\n",(gpsx->utc.hour+8)%24,gpsx->utc.min,gpsx->utc.sec);    //时分秒
 	printf("locate: %f%c %f%c\n",(float)gpsx->longitude/100000,gpsx->ewhemi,(float)gpsx->latitude/100000,gpsx->nshemi);//经纬度
-  printf("speed: %f\r\n", (float)gpsx->speed/1000);  //速度
+//  printf("speed: %f\r\n", (float)gpsx->speed/1000);  //速度
 	printf("height: %.3f\n\n",(float)gpsx->altitude/10); //海拔高度
 }

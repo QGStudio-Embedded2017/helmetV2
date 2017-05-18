@@ -33,7 +33,7 @@
 #include "bsp_usart3.h"
 #include "sim900a.h"
 
-#define PHOTO_NUM 10
+#define PHOTO_NUM 2
 
 
 
@@ -79,7 +79,7 @@ int main(void)
 		GPIO_Configuration();//继电器引脚初始化PC14,PA11
 		GPIO_ResetBits(GPIOD,GPIO_Pin_12);//打开继电器
 	
-		NVIC_Configuration();//NVIC优先级初始化
+		NVIC_Configuration();//NVIC优先级初始化                                                                                                                                                                                                                                                                                 
 		EXTI_Configuration();//外部中断初始化   	
 		BEEP_Init();
 		KEY_Init(); 
@@ -91,8 +91,10 @@ int main(void)
 		UART4_Init(9600);
 ////SD卡初始化
 		if(sdfs_app_mnt() != FR_OK)	printf("\r\nSD卡ERROR\r\n");
+		else printf("sd ok\r\n");
 ////gprs初始化		
 		count2 = 0;
+		//sim900a_tx_printf("ATE1\r");
 		while((!GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13)) && gprs_init("123.207.124.49","6666") == 0)//GPRS初始化
 		{
 			count2++;

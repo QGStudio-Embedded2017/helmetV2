@@ -48,7 +48,7 @@ void UART4_Init(u32 bound)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4,ENABLE);   //USART2时钟
 
   /*配置PC10，即UART4 Tx*/
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2; //PC.10
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //PC.10
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽输出
   GPIO_Init(GPIOC, &GPIO_InitStructure); //初始化PA2

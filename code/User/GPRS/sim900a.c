@@ -30,6 +30,7 @@
 #include "debug.h"
 #include "ff.h"
 #include "Bluetooth.h"
+#include "bsp_usart3.h"
 char ime[16];//IMEI串号
 char ccid[20];//CCID号码
 char csq;//CSQ
@@ -67,7 +68,7 @@ sim900a_res_e sim900a_cmd_check(char *reply)
 
 	redata = SIM900A_RX();   //接收数据    
 	
-	
+	printf("%s\r\n",redata);
 	if(strstr(redata,reply) != NULL) 
 	{
 		SIM900A_CLEAN_RX();
@@ -277,20 +278,57 @@ sim900a_res_e sim900a_gprs_status(void)
 sim900a_res_e sim900a_gprs_send(char * str,u32 len)
 {
 	char* redata[50];
-	int i ;
-	char a[21] = "sdsahudhusfdsfsdfds";
+	int count = 0;
+	int i,j = 0;
 	SIM900A_CLEAN_RX();                 //清空了接收缓冲区数据
   sim900a_tx_printf("AT+CIPSEND\r");
 	SIM900A_DELAY(100);                 //延时
 	//printf("发送中\n");
-	printf("len = %d",len);
+
+	SIM900A_DELAY(100);
   if (sim900a_cmd_check(">") == SIM900A_TRUE)
 	{
-		for(i = 0;i < 21;i++)
-			sim900a_tx_printf("%d",a);	
+		for(i = 0;i < len;i++)
+		{
+			  if(*str == '\0' || *str == 0x1a || *str == 0x1b)
+				{
+				  str++;
+					j++;
+				}
+				else
+				{
+					USART_SendData(USART3,*str);
+					while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
+					str++;						
+				}
+			
+		}
+		printf("j = %d\r\n",j);
 		SIM900A_DELAY(100);
 		SIM900A_SEND_ENDCHAR();
-		SIM900A_DELAY(1264);		
+		SIM900A_DELAY(100);
+		SIM900A_CLEAN_RX();//清空了接收缓冲区数据
+		while(1)
+		{
+			if(strstr(SIM900A_RX(),"OK") != NULL || strstr(SIM900A_RX(),"ERROR") != NULL) 
+				break;
+			else
+			{
+				if(count < 1000)//10s超时
+				{
+					count++;
+					delay_ms(10);
+				}
+				else
+				{
+					printf("获取返回信息失败\r\n");
+					return SIM900A_FALSE;
+				}
+			}
+				
+		}
+		
+		//SIM900A_DELAY(1464);		
 		return sim900a_cmd_check("SEND OK");
 	}
 	else

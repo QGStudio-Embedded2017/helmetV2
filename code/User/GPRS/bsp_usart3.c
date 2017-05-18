@@ -182,6 +182,7 @@ void USART3_printf(USART_TypeDef* USARTx, char *Data,...)
 {
 	const char *s;
   int d;   
+	char c;
   char buf[16];
 
   va_list ap;
@@ -212,7 +213,14 @@ void USART3_printf(USART_TypeDef* USARTx, char *Data,...)
 		{									  //
 			switch ( *++Data )
 			{				
-			case 's':										  //×Ö·û´®
+			  case 'c':										//%c
+				c = va_arg(ap, char);
+				USART_SendData(USARTx,c);
+				while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
+				Data++;
+				break;
+
+				case 's':										  //×Ö·û´®
 				s = va_arg(ap, const char *);
 				for ( ; *s; s++) 
 				{
