@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////// 
 
 
-#define OV2640_JPEG_WIDTH	1280	//JPEG拍照的宽度	
-#define OV2640_JPEG_HEIGHT	960		//JPEG拍照的高度
+#define OV2640_JPEG_WIDTH	1024	//JPEG拍照的宽度	
+#define OV2640_JPEG_HEIGHT	768		//JPEG拍照的高度
 
 
 //OV2640 相关IO 

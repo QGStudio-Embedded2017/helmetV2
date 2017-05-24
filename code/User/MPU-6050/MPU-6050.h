@@ -96,6 +96,8 @@ void USART2_Config(void);
  */
 void USART2_DMA_Config(void);
 
+//mpu6050的初始化
+void mpu6050_init(void);
 /**
  * @brief  		处理旋转后加速度的消除平衡问题
  * @param  		void

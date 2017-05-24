@@ -20,16 +20,16 @@
   */
 void GoToSleep(void)
 {
-	GPIO_SetBits(GPIOD,GPIO_Pin_12);//关闭继电器
 /*	
 	SCB->SCR |= 0X00;
-	
+
 
 	#if defined ( __CC_ARM   )                          
 	__force_stores();
 	#endif
 	__WFI();//等待中断
-*/
+*/  	
+	GPIO_SetBits(GPIOD,GPIO_Pin_12);//打开继电器
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//使能PWR时钟
 	PWR_EnterSTOPMode(PWR_Regulator_LowPower,PWR_STOPEntry_WFI);//进入停止模式
 }

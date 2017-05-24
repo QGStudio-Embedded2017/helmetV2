@@ -51,7 +51,7 @@ void UART4_Init(u32 bound)
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //PC.10
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽输出
-  GPIO_Init(GPIOC, &GPIO_InitStructure); //初始化PA2
+  GPIO_Init(GPIOC, &GPIO_InitStructure); //初始化PC10
   /*配置PC11，即UART4 Rx*/    
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//浮空输入

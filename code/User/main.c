@@ -33,7 +33,7 @@
 #include "bsp_usart3.h"
 #include "sim900a.h"
 
-#define PHOTO_NUM 2
+#define PHOTO_NUM 10
 
 
 
@@ -62,13 +62,13 @@ int main(void)
 	RCC_Configuration();//RCC时钟初始化              
 	delay_init();//嘀嗒定时器初始化
 	NVIC_Configuration();//NVIC优先级初始化（RTC 和 外部中断）
-	GPIO_Configuration();//继电器引脚初始化PC13,PD12
+	GPIO_Configuration();//继电器引脚初始化PC14,PA11
 	EXTI_Configuration();//外部中断初始化,中断引脚PC14
 	USART_Config(115200);//串口1初始化，用于蓝牙传输数据
+	
 	USART3_Config(115200);//串口3初始化，用于GPRS
 	UART4_Init(115200);
-	delay_ms(1800);
-
+	
 	while(1)
 	{	
 		delay_ms(100);
@@ -79,7 +79,7 @@ int main(void)
 		GPIO_Configuration();//继电器引脚初始化PC14,PA11
 		GPIO_ResetBits(GPIOD,GPIO_Pin_12);//打开继电器
 	
-		NVIC_Configuration();//NVIC优先级初始化                                                                                                                                                                                                                                                                                 
+		NVIC_Configuration();//NVIC优先级初始化
 		EXTI_Configuration();//外部中断初始化   	
 		BEEP_Init();
 		KEY_Init(); 
@@ -89,21 +89,11 @@ int main(void)
 		USART3_Config(115200);
 //串口4初始化，用于gps传输数据		
 		UART4_Init(9600);
+
 ////SD卡初始化
-		if(sdfs_app_mnt() != FR_OK)	printf("\r\nSD卡ERROR\r\n");
-		else printf("sd ok\r\n");
-////gprs初始化		
-		count2 = 0;
-		//sim900a_tx_printf("ATE1\r");
-		while((!GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13)) && gprs_init("123.207.124.49","6666") == 0)//GPRS初始化
-		{
-			count2++;
-			if(count2 >= 5)
-			{
-				printf("GPRS网络状态错误\r\n");//尝试重新初始化
-				break ;
-			}
-		}
+		printf("sd start!!!\n");
+		if(sdfs_app_mnt() != FR_OK)	printf("\r\nERROR\r\n");
+		printf("sd end!!!\n");
 		my_mem_init(SRAMIN);//初始化内部内存池
 		ov2640_framebuf = mymalloc(SRAMIN,52*1024);//申请帧缓存
 		pname=mymalloc(SRAMIN,30);		//为带路径的文件名分配30个字节的内存		    
@@ -144,8 +134,8 @@ int main(void)
 
 							SendFromMPUtoBluetooth(MPU_data);//打包加速度数据给蓝牙
 //						printf("Accident!%f %f %f %f\n", Axis[0], Axis[1], Axis[2], Square(Axis[0]) + Square(Axis[1]) + Square(Axis[2]));						
-//							printf("%s\n", MPU_data);				
-              			        BEEP_Open();
+							printf("%s\n", MPU_data);				
+			        BEEP_Open();
 							
 							timecount = 0;
 							isAccident = 0;
@@ -168,6 +158,17 @@ int main(void)
 //							/*拍摄照片*/	            
 							for(count = 0; count < PHOTO_NUM; )
 							{
+								////gprs初始化		
+												count2 = 0;
+												while(gprs_init("123.207.124.49","6666") == 0)//GPRS初始化
+												{
+													count2++;
+													if(count2 >= 5)
+													{
+														printf("GPRS网络状态错误\r\n");//尝试重新初始化
+														break ;
+													}
+												}
 												sprintf((char *)pname, "%d.jpg", count++);
 												ov2640_jpg_photo(pname);  
 												delay_ms(1000);  

@@ -17,7 +17,7 @@
 #include <stdarg.h>
 
 //中断缓存串口数据
-#define		USART3_BUFF_SIZE      600
+#define		USART3_BUFF_SIZE     400
 volatile    uint8_t usart3_index = 0;
 uint8_t     usart3_buff[USART3_BUFF_SIZE];
 

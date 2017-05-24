@@ -68,7 +68,6 @@ sim900a_res_e sim900a_cmd_check(char *reply)
 
 	redata = SIM900A_RX();   //接收数据    
 	
-	printf("%s\r\n",redata);
 	if(strstr(redata,reply) != NULL) 
 	{
 		SIM900A_CLEAN_RX();
@@ -290,18 +289,20 @@ sim900a_res_e sim900a_gprs_send(char * str,u32 len)
 	{
 		for(i = 0;i < len;i++)
 		{
-			  if(*str == '\0' || *str == 0x1a || *str == 0x1b)
+			  if(*str == 0x1a || *str == 0x1b)
 				{
-				  str++;
+					USART_SendData(USART3,*str + 2);
 					j++;
 				}
-				else
+				else if(*str == 0x1c || *str == 0x1d)
 				{
 					USART_SendData(USART3,*str);
 					while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
-					str++;						
+					USART_SendData(USART3,*str);
 				}
-			
+				else				USART_SendData(USART3,*str);
+			  while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
+				str++;
 		}
 		printf("j = %d\r\n",j);
 		SIM900A_DELAY(100);
@@ -434,10 +435,6 @@ sim900a_res_e gprs_init(char* ip,char* port)
 	u32 count2=0;
 	while(sim900a_cmd("AT\r","OK",1000) != 1)//检测模块响应是否正常
 	{
-		if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13) == 1)
-		{
-				return 1;
-		}
 		count++;
 		if(count >= 5)//尝试重新连接超过5遍
 		{

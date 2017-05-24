@@ -46,13 +46,10 @@ u8 ov2640_jpg_photo(u8 *pname)
 			jpeglen++;
 		}        
 	}		
-//	for(i = 0;i < jpeglen;i++)
-//		printf("%x ",ov2640_framebuf[i]);
+	printf("jpeglen = %d\r\n",jpeglen);		
 	res = f_open(f_jpg,(const TCHAR*)pname,FA_WRITE|FA_CREATE_NEW);//模式0,或者尝试打开失败,则创建新文件
-	printf("res = %d\r\n",res);
 	if(res == FR_OK)
 	{
-		printf("jpeg data size:%d\r\n",jpeglen);	//串口打印JPEG文件大小
 		pbuf=(u8*)ov2640_framebuf;
 		for(i=0;i<jpeglen;i++)//查找0XFF,0XD8
 		{
@@ -64,13 +61,12 @@ u8 ov2640_jpg_photo(u8 *pname)
 			pbuf+=i;//偏移到0XFF,0XD8处
 			res=f_write(f_jpg,pbuf,jpeglen-i,&bwr);
 			if(bwr!=(jpeglen-i))res=0XFE; 
-			printf("拍照成功");
 		}
+		printf("拍照成功，图片名字为%s\r\n",pname);
 	}
-	printf("jpeglen = %d\r\n",jpeglen);	
 	f_close(f_jpg);
-	for(i = 0;jpeglen - i >= 1000;i += 1000)
-		if(sim900a_gprs_send(ov2640_framebuf + i,1000) == 1)//发送图像数据
+	for(i = 0;jpeglen - i >= 800;i += 800)
+		if(sim900a_gprs_send(ov2640_framebuf + i,800) == 1)//发送图像数据
 		{
 			printf("发送成功！\r\n\r\n");
 			delay_ms(100);
@@ -85,7 +81,7 @@ u8 ov2640_jpg_photo(u8 *pname)
 	sim900a_gprs_link_close();//关闭连接,要等待把整个图片数组发完才关闭连接，不是发一次关一次  
 	OV2640_RGB565_Mode();	//RGB565模式 
 	myfree(SRAMIN,f_jpg); 
-	printf("link in!!!");
+	printf("上传完毕!!!\r\n");
 	return res;
 }  
 

@@ -97,7 +97,15 @@ void USART2_DMA_Config(void)
 		DMA_Cmd (DMA1_Channel6,ENABLE);					
 }
 
-
+//初始化mpu6050
+void mpu6050_init(void)
+{
+	USART2_Config();  //配置串口2
+	USART2_DMA_Config();   //配置串口2的DMA传输
+	DMA_ClearFlag(DMA1_FLAG_TC6);
+	USART_DMACmd(USART2,USART_DMAReq_Rx,ENABLE);  //使能串口2的DMA传输
+}
+	
 
 /**
  * @brief  得出三个方向轴的加速度

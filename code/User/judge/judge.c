@@ -22,14 +22,12 @@ void KEY_Init(void)
 }
 
 //°´¼üÉ¨Ãèº¯Êý
-u8 KEY_Scan(u8 mode)
+u8 KEY_Scan(void)
 {
 	static u8 key_up = 1;
-	if(mode) key_up =1;
 	if(key_up && KEY == 0)
 	{
 		delay_ms(10);
-		key_up = 0;
 		if(KEY == 0) return 1;
 	}
 	else if(KEY == 1) key_up = 1;
