@@ -8,13 +8,14 @@
 #include "sccb.h"	
 #include "ff.h"
 
+#define SEND_MAX_BUF 800
 u8* ov2640_framebuf;				//帧缓存
 
 //OV2640拍照jpg图片
 //pname:要保存的jpg照片路径+名字
 //返回值:0,成功
 //    其他,错误代码
-u8 ov2640_jpg_photo(u8 *pname)
+u8 ov2640_jpg_savephoto(u8 *pname)
 {
 	FIL* f_jpg;
 	FRESULT res;
@@ -47,7 +48,7 @@ u8 ov2640_jpg_photo(u8 *pname)
 		}        
 	}		
 	printf("jpeglen = %d\r\n",jpeglen);		
-	res = f_open(f_jpg,(const TCHAR*)pname,FA_WRITE|FA_CREATE_NEW);//模式0,或者尝试打开失败,则创建新文件
+	res = f_open(f_jpg,(const TCHAR*)pname,FA_WRITE|FA_OPEN_ALWAYS);//模式0,或者尝试打开失败,则创建新文件
 	if(res == FR_OK)
 	{
 		pbuf=(u8*)ov2640_framebuf;
@@ -65,14 +66,50 @@ u8 ov2640_jpg_photo(u8 *pname)
 		printf("拍照成功，图片名字为%s\r\n",pname);
 	}
 	f_close(f_jpg);
-	for(i = 0;jpeglen - i >= 800;i += 800)
-		if(sim900a_gprs_send(ov2640_framebuf + i,800) == 1)//发送图像数据
+	OV2640_RGB565_Mode();	//RGB565模式 
+	myfree(SRAMIN,f_jpg); 
+	printf("上传完毕!!!\r\n");
+	return res;
+}  
+
+//OV2640拍照jpg图片
+//pname:要保存的jpg照片路径+名字
+//返回值:0,成功
+//    其他,错误代码
+void ov2640_jpg_sendphoto(void)
+{
+	u32 i=0;
+	u32 jpeglen=0;
+	OV2640_JPEG_Mode();							//切换为JPEG模式 
+  OV2640_OutSize_Set(OV2640_JPEG_WIDTH,OV2640_JPEG_HEIGHT); 
+	SCCB_WR_Reg(0XFF,0X00);
+	SCCB_WR_Reg(0XD3,35);
+	SCCB_WR_Reg(0XFF,0X01);
+	SCCB_WR_Reg(0X11,0X1); 
+	for(i=0;i<10;i++)		//丢弃10帧，等待OV2640自动调节好（曝光白平衡之类的）
+	{
+		while(OV2640_VSYNC==1);	 
+		while(OV2640_VSYNC==0);	  
+	}  
+	while(OV2640_VSYNC==1)	//开始采集jpeg数据
+	{
+		while(OV2640_HREF)
+		{  
+			while(OV2640_PCLK==0); 
+			ov2640_framebuf[jpeglen]= OV2640_DATA;
+			while(OV2640_PCLK==1);  
+			jpeglen++;
+		}        
+	}		
+	printf("jpeglen = %d\r\n",jpeglen);		
+	for(i = 0;jpeglen - i >= SEND_MAX_BUF;i += SEND_MAX_BUF)
+		if(sim900a_gprs_send_photo(ov2640_framebuf + i,SEND_MAX_BUF) == 1)//发送图像数据
 		{
 			printf("发送成功！\r\n\r\n");
 			delay_ms(100);
 		}
 		else 		printf("发送失败！\r\n\r\n");
-	if(sim900a_gprs_send(ov2640_framebuf + i,jpeglen - i) == 1)//发送图像数据
+	if(sim900a_gprs_send_photo(ov2640_framebuf + i,jpeglen - i) == 1)//发送图像数据
 	{
 			printf("发送成功！\r\n\r\n");
 			delay_ms(100);
@@ -80,11 +117,8 @@ u8 ov2640_jpg_photo(u8 *pname)
 	else 		printf("发送失败！\r\n\r\n");	
 	sim900a_gprs_link_close();//关闭连接,要等待把整个图片数组发完才关闭连接，不是发一次关一次  
 	OV2640_RGB565_Mode();	//RGB565模式 
-	myfree(SRAMIN,f_jpg); 
 	printf("上传完毕!!!\r\n");
-	return res;
 }  
-
 //OV2640速度控制
 //根据LCD分辨率的不同，设置不同的参数
 void ov2640_speed_ctrl(void)

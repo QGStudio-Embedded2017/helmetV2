@@ -3,10 +3,100 @@
 <pre>
 <h1>礦ision Build Log</h1>
 <h2>Project:</h2>
-C:\Users\moying\Desktop\挑战杯代码\helmetV2\code\Project\RVMDK（uv4）\iSO-STM32.uvprojx
+C:\Users\moying\Desktop\新建文件夹\helmetV2\code\Project\RVMDK（uv4）\iSO-STM32.uvprojx
 Project File Date:  05/18/2017
 
 <h2>Output:</h2>
-</pre>
-</body>
-</html>
+Build target 'Helmet'
+compiling ov2640.c...
+..\..\User\OV2640\ov2640.c(59): warning:  #188-D: enumerated type mixed with another type
+                if(i==jpeglen)res=0XFD;//没找到0XFF,0XD8
+..\..\User\OV2640\ov2640.c(64): warning:  #188-D: enumerated type mixed with another type
+                        if(bwr!=(jpeglen-i))res=0XFE; 
+..\..\User\OV2640\ov2640.c(106): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *"
+                if(sim900a_gprs_send_photo(ov2640_framebuf + i,SEND_MAX_BUF) == 1)//发送图像数据
+..\..\User\OV2640\ov2640.c(112): warning:  #167-D: argument of type "u8 *" is incompatible with parameter of type "char *"
+        if(sim900a_gprs_send_photo(ov2640_framebuf + i,jpeglen - i) == 1)//发送图像数据
+..\..\User\OV2640\ov2640.c: 4 warnings, 0 errors
+linking...
+Program Size: Code=38144 RO-data=1620 RW-data=132 ZI-data=65264  
+FromELF: creating hex file...
+"..\..\Output\Helmet.axf" - 0 Error(s), 4 Warning(s).
+r: Flash Download failed  -  Target DLL has been cancelled
+Load "..\\..\\Output\\Helmet.axf" 
+Set JLink Project File to "C:\Users\moying\Desktop\新建文件夹\helmetV2\code\Project\RVMDK（uv4）\JLinkSettings.ini"
+* JLink Info: Device "STM32F103ZE" selected (512 KB flash, 64 KB RAM).
+ 
+JLink info:
+------------
+DLL: V4.80g, compiled Feb 13 2014 20:50:02
+Firmware: J-Link ARM V7 compiled Jun 20 2012 19:45:53
+Hardware: V7.00
+S/N : 19087980 
+Feature(s) : RDI, FlashDL, FlashBP, JFlash, GDBFull 
+ 
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: STM32F1xxx: Can not attach to CPU. Trying connect under reset.
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: Found Cortex-M3 r1p1, Little endian.
+* JLink Info: FPUnit: 6 code (BP) slots and 2 literal slots
+* JLink Info: TPIU fitted.
+* JLink Info: ETM fitted.
+ROMTableAddr = 0xE00FF003
+ 
+Target info:
+------------
+Device: STM32F103ZE
+VTarget = 4.406V
+State of Pins: 
+TCK: 1, TDI: 0, TDO: 1, TMS: 0, TRES: 1, TRST: 1
+Hardware-Breakpoints: 6
+Software-Breakpoints: 8192
+Watchpoints:          4
+JTAG speed: 1000 kHz
+ 
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...
+ot attach to CPU. Trying connect under reset.
+* JLink Info: Could not measure total IR len. TDO is constant high.
+Error: Flash Download failed  -  Target DLL has been cancelled
+Load "..\\..\\Output\\Helmet.axf" 
+Set JLink Project File to "C:\Users\moying\Desktop\新建文件夹\helmetV2\code\Project\RVMDK（uv4）\JLinkSettings.ini"
+* JLink Info: Device "STM32F103ZE" selected (512 KB flash, 64 KB RAM).
+ 
+JLink info:
+------------
+DLL: V4.80g, compiled Feb 13 2014 20:50:02
+Firmware: J-Link ARM V7 compiled Jun 20 2012 19:45:53
+Hardware: V7.00
+S/N : 19087980 
+Feature(s) : RDI, FlashDL, FlashBP, JFlash, GDBFull 
+ 
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: STM32F1xxx: Can not attach to CPU. Trying connect under reset.
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: TotalIRLen = 9, IRPrint = 0x0011
+* JLink Info: Found Cortex-M3 r1p1, Little endian.
+* JLink Info: FPUnit: 6 code (BP) slots and 2 literal slots
+* JLink Info: TPIU fitted.
+* JLink Info: ETM fitted.
+ROMTableAddr = 0xE00FF003
+ 
+Target info:
+------------
+Device: STM32F103ZE
+VTarget = 4.361V
+State of Pins: 
+TCK: 1, TDI: 0, TDO: 1, TMS: 0, TRES: 1, TRST: 1
+Hardware-Breakpoints: 6
+Software-Breakpoints: 8192
+Watchpoints:          4
+JTAG speed: 1000 kHz
+ 
+Erase Done.
+Programming Done.
+Verify OK.
+Application running ...

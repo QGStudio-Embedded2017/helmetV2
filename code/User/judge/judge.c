@@ -4,17 +4,17 @@
 #include "usart.h"
 #include "judge.h"
 
-extern u8 isAccident;
+u8 isAccident = 0;
 u8 timecount = 0;
 	
 //按键函数初始化，用于按键的检测
-void KEY_Init(void)
+void KEY_Init(void)             //PD4
 {
 	EXTI_InitTypeDef EXTI_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOD,&GPIO_InitStructure);

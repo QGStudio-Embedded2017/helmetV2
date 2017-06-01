@@ -274,9 +274,37 @@ sim900a_res_e sim900a_gprs_status(void)
  * @param  str:数据指针
  * @retval 无
  */
-sim900a_res_e sim900a_gprs_send(char * str,u32 len)
+sim900a_res_e sim900a_gprs_send(char * str)
 {
-	char* redata[50];
+	int i = 50;
+	SIM900A_CLEAN_RX();                 //清空了接收缓冲区数据
+  sim900a_tx_printf("AT+CIPSEND\r");
+	SIM900A_DELAY(300);                 //延时
+	printf("发送中\n");
+  if (sim900a_cmd_check(">") == SIM900A_TRUE)
+	{
+		sim900a_tx_printf(str,i);
+		SIM900A_DELAY(100);
+		SIM900A_SEND_ENDCHAR();
+		SIM900A_DELAY(1264);
+		SIM900A_DELAY(1264);		
+		return sim900a_cmd_check("SEND OK");
+	}
+	else
+	{
+		SIM900A_SEND_ENDCHAR();
+		//SIM900A_DELAY(100);
+		//SIM900A_CLEAN_RX();
+		return SIM900A_FALSE;
+	}
+}
+/**
+ * @brief  sim900a_gprs_send 通过GPRS发送数据
+ * @param  str:数据指针
+ * @retval 无
+ */
+sim900a_res_e sim900a_gprs_send_photo(char * str,u32 len)
+{
 	int count = 0;
 	int i,j = 0;
 	SIM900A_CLEAN_RX();                 //清空了接收缓冲区数据
@@ -292,13 +320,17 @@ sim900a_res_e sim900a_gprs_send(char * str,u32 len)
 			  if(*str == 0x1a || *str == 0x1b)
 				{
 					USART_SendData(USART3,*str + 2);
+					while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
+					USART_SendData(USART3,*str + 2);
+					while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
+					USART_SendData(USART3,'\0');
 					j++;
 				}
 				else if(*str == 0x1c || *str == 0x1d)
 				{
 					USART_SendData(USART3,*str);
 					while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
-					USART_SendData(USART3,*str);
+					USART_SendData(USART3,'\0');
 				}
 				else				USART_SendData(USART3,*str);
 			  while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
@@ -419,7 +451,7 @@ sim900a_res_e gprs_reg_status(void)
 	}
 	else
 	{	
-		printf("未注册 ERR:%s\r\n",redata[22]);
+		printf("未注册 ERR:%c\r\n",redata[22]);
 		return SIM900A_FALSE;
 	}
 }
@@ -439,7 +471,7 @@ sim900a_res_e gprs_init(char* ip,char* port)
 		if(count >= 5)//尝试重新连接超过5遍
 		{
 			printf("模块响应测试错误！\r\n");
-			return 0;
+			return SIM900A_FALSE;
 		}
 		else
 		{
@@ -458,18 +490,18 @@ sim900a_res_e gprs_init(char* ip,char* port)
 		if (1 == sim900a_gprs_tcp_link(ip, port))
 		{
 			printf("TCP建立连接成功！GPRS网络工作正常\r\n\r\n");
-			return 1;
+			return SIM900A_TRUE;
 		}
 		else
 		{
 			printf("TCP建立连接失败！GPRS网络工作异常(%d)\r\n\r\n",count2);
-			return 0;				
+			return SIM900A_FALSE;				
 		}	
 	}
 	else
 	{
 		printf("GPRS网络工作正常\r\n");
-		return 1;
+		return SIM900A_TRUE;
 	}
 }
 

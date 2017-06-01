@@ -57,7 +57,8 @@ extern  char *      	sim900a_waitask             (uint8_t waitask_hook(void));  
 extern  sim900a_res_e   gprs_init(char* ip,char* port);
 extern  void        	  sim900a_gprs_init           (void);                                                 //GPRS初始化环境
 extern  sim900a_res_e   sim900a_gprs_tcp_link       (char * serverip,char * serverport);    //TCP连接
-extern  sim900a_res_e   sim900a_gprs_send           (char *str,u32 len);                                            //发送数据
+extern	sim900a_res_e sim900a_gprs_send(char * str);
+extern  sim900a_res_e   sim900a_gprs_send_photo           (char *str,u32 len);                                            //发送数据
 extern  void        	  sim900a_gprs_link_close     (void);                                                 //IP链接断开
 extern  sim900a_res_e  	sim900a_gprs_status			(void);	//判断网络连接状态 
 extern  sim900a_res_e 	gprs_reg_status				(void);

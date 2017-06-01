@@ -15,7 +15,7 @@ void BEEP_Init(void)
  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	 //速度为50MHz
  GPIO_Init(GPIOB, &GPIO_InitStructure);	 //根据参数初始化GPIOB.8
  
- GPIO_ResetBits(GPIOB,GPIO_Pin_6);//输出0，关闭蜂鸣器输出
+ GPIO_ResetBits(GPIOB,GPIO_Pin_5);//输出0，关闭蜂鸣器输出
 
 }
 

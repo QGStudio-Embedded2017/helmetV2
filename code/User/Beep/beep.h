@@ -1,6 +1,6 @@
 #ifndef __BEEP_H
 #define __BEEP_H	 
-#include "sys.h"               7
+#include "sys.h"           
 	   
 
 void BEEP_Init(void);	//≥ı ºªØ

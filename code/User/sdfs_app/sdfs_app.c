@@ -65,7 +65,6 @@ void sdfs_app_test(void)
 int sdfs_app_mnt(void)
 {
 	/* 注册一个工作区，逻辑号为1 */
-	printf("sd start!!!!\n");
 	if(f_mount(&myfat, root, 1) != FR_OK)
 	{
 		SDFS_APP_DEBUG("Mount SD failed.\r\n");

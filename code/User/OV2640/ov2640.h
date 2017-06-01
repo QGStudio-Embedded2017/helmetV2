@@ -112,7 +112,8 @@
 								
 	    				 
 u8 OV2640_Init(void);  
-u8 ov2640_jpg_photo(u8 *pname);
+u8 ov2640_jpg_savephoto(u8 *pname);
+void ov2640_jpg_sendphoto(void);
 void ov2640_speed_ctrl(void);
 void OV2640_JPEG_Mode(void);
 void OV2640_RGB565_Mode(void);

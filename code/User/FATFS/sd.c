@@ -300,7 +300,6 @@ u8 SD_Init(void)
 	}
 	SD_DisSelect();			//取消片选
 	SD_SPI_SetHighSpeed();	//正常传输设置为高速
-	printf("SD_Type = %d\r\n",SD_Type);
 	if(SD_Type)	return 0;
 	if(r1)	return r1;
 	return 0xaa;
