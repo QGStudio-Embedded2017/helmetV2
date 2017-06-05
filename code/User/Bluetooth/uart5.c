@@ -19,7 +19,7 @@ void UART5_IRQHandler(void)
 
 	if(USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)//接收到数据
 	{	 
-    res = USART_ReceiveData(UART5);		  	
+    res = USART_ReceiveData(UART5);		 		
 		if(UART5_RX_STA < UART5_MAX_RECV_LEN)		//还可以接收数据
 		{ 
 
@@ -130,7 +130,7 @@ void TIM2_Init(u16 arr,u16 psc)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
  	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE ); //使能指定的TIM3中断,允许更新中断
-	/*配置TIM3中断*/ 	  
+	/*配置TIM2中断*/ 	  
 	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//抢占优先级2
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//子优先级1

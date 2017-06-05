@@ -31,6 +31,7 @@
 #include "Bluetooth.h"
 #include "bsp_usart3.h"
 #include "sim900a.h"
+#include "uart5.h"
 #include "uart4.h"
 
 
@@ -57,7 +58,8 @@ void gpsData_send(void);
 int main(void)
 {
 	u8 initCount,photoNum;
-	char MPU_data[21];		             
+	char MPU_data[21];	
+	char send_message[100];
 	u8 *pname;					//带路径的文件名 
 	RCC_Configuration();//RCC时钟初始化              
 	delay_init();//嘀嗒定时器初始化
@@ -78,6 +80,7 @@ loop:
 	USART_Config(9600);  //串口1初始化，用于调试使用
 	USART3_Config(115200); //串口3初始化，用于gprs
 	UART4_Init(9600);// 串口4初始化，用于GPS传输数据
+	UART5_Init(9600);
 
 	if(sdfs_app_mnt() != FR_OK)	printf("\r\nSD卡ERROR\r\n");    //SD卡初始化
 	my_mem_init(SRAMIN);//初始化内部内存池
@@ -118,6 +121,7 @@ loop:
 		if(isAccident == 1) continue;
 		srand((unsigned)Angular[2]);
 //		gpsData_send();   	
+		USART3_printf(UART5,"aaa\r\n");
 		for(initCount = 0;initCount < 5 && !gprs_init("123.207.124.49","6666");initCount++)//GPRS初始化
 		{
 				printf("GPRS网络状态错误\r\n");//尝试重新初始化
@@ -128,9 +132,12 @@ loop:
 			ov2640_jpg_savephoto(pname);  
 			delay_ms(100);  
 		}	  
-
+		gpsData_send();
 		sim900a_gprs_send("HM+SMS\r\n3115005537.txt\r\n");
-		sim900a_gprs_send("我的名字是梁盛兑，我在XX地点遭遇到了车祸，请及时救援.\r\n");
+		sprintf(send_message,"我的名字是梁盛兑，我在经度:%f%c,维度%f%c遭遇到了车祸，请及时救援。",(float)gps->longitude/100000,gps->ewhemi,(float)gps->latitude/100000,gps->nshemi);
+		sim900a_gprs_send(send_message);
+		sprintf(send_message,"我的生理参数是:性别-%s,年龄-%d岁，身高-%dcm，体重-%dkg，血型-%c,过敏病史-%s\r\n","男",21,168,51,'A',"无");
+		sim900a_gprs_send(send_message);
 		for(photoNum = 0; photoNum < PHOTO_NUM;photoNum++ )
 		{
 			ov2640_jpg_sendphoto();  
@@ -145,7 +152,6 @@ void gpsData_send(void)
 {
 			while((UART4_RX_STA & 0x8000 ) == 0);       //等待GPS信息发送完毕
 			GPSMSG_Analysis(gps,UART4_RX_BUF);           //分析GPS信息
-			Send_NMEA_MSG(gps);                           //打印相关的GPS信息
 			UART4_RX_STA = 0;	   										
 }
 

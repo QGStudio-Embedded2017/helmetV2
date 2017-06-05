@@ -55,4 +55,5 @@
 ..\..\output\main.o: ..\..\User\Bluetooth\Bluetooth.h
 ..\..\output\main.o: ..\..\User\GPRS\bsp_usart3.h
 ..\..\output\main.o: ..\..\User\GPRS\sim900a.h
+..\..\output\main.o: ..\..\User\Bluetooth\uart5.h
 ..\..\output\main.o: ..\..\User\GPS\uart4.h

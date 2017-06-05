@@ -66,11 +66,6 @@ u8 ov2640_jpg_savephoto(u8 *pname)
 		printf("拍照成功，图片名字为%s\r\n",pname);
 	}
 	f_close(f_jpg);
-	printf("jpeglen = %d\r\n",jpeglen);			
-	sim900a_gprs_send("HM+PHT\r\n");
-	for(i = 0;jpeglen - i >= SEND_MAX_BUF;i += SEND_MAX_BUF)	sim900a_gprs_send_photo(ov2640_framebuf + i,SEND_MAX_BUF);//发送图像数据
-	sim900a_gprs_send_photo(ov2640_framebuf + i,jpeglen - i);//发送图像数据    
-	sim900a_gprs_send_photo(data,2);
 	OV2640_RGB565_Mode();	//RGB565模式 
 	myfree(SRAMIN,f_jpg); 
 	printf("上传完毕!!!\r\n"); 

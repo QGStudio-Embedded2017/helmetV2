@@ -19,7 +19,7 @@ void UART4_IRQHandler(void)
 
 	if(USART_GetITStatus(UART4, USART_IT_RXNE) != RESET)//接收到数据
 	{	 
-    res = USART_ReceiveData(UART4);		  	
+    res = USART_ReceiveData(UART4);		  
 		if(UART4_RX_STA < UART4_MAX_RECV_LEN)		//还可以接收数据
 		{ 
 
