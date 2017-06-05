@@ -310,8 +310,7 @@ sim900a_res_e sim900a_gprs_send_photo(char * str,u32 len)
 	SIM900A_CLEAN_RX();                 //清空了接收缓冲区数据
   sim900a_tx_printf("AT+CIPSEND\r");
 	SIM900A_DELAY(100);                 //延时
-	//printf("发送中\n");
-
+	printf("发送中\n");
 	SIM900A_DELAY(100);
   if (sim900a_cmd_check(">") == SIM900A_TRUE)
 	{
@@ -333,7 +332,7 @@ sim900a_res_e sim900a_gprs_send_photo(char * str,u32 len)
 					USART_SendData(USART3,'\0');
 				}
 				else				USART_SendData(USART3,*str);
-			  while( USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
+			  while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET );
 				str++;
 		}
 		printf("j = %d\r\n",j);

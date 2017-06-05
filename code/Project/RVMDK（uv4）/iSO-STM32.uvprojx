@@ -657,6 +657,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\MALLOC\malloc.c</FilePath>
             </File>
+            <File>
+              <FileName>uart5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\Bluetooth\uart5.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

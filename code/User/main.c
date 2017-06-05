@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
   * @file    main.c
-  * @author  Jinji.Fang
-  * @version V1.0
-  * @date    2016-10-16
+  * @author  Shengdui.Liang
+  * @version V2.0
+  * @date    2017-5-30
   * @brief   用3.5.0版本库建的智能急救头盔程序 (可以发送数据到服务器上)
   ******************************************************************************
   * @attention
@@ -34,7 +34,7 @@
 #include "uart4.h"
 
 
-#define PHOTO_NUM 5
+#define PHOTO_NUM 3
 
 
 
@@ -117,22 +117,26 @@ loop:
 		TIM_Cmd(TIM4,DISABLE);//关闭定时器4
 		if(isAccident == 1) continue;
 		srand((unsigned)Angular[2]);
-//		gpsData_send();
+//		gpsData_send();   	
+		for(initCount = 0;initCount < 5 && !gprs_init("123.207.124.49","6666");initCount++)//GPRS初始化
+		{
+				printf("GPRS网络状态错误\r\n");//尝试重新初始化
+		}
 		for(photoNum = 0; photoNum < PHOTO_NUM;photoNum++ )
 		{
 			sprintf((char *)pname, "%d.jpg",rand() % 10000);
 			ov2640_jpg_savephoto(pname);  
 			delay_ms(100);  
-		}	
+		}	  
+
+		sim900a_gprs_send("HM+SMS\r\n3115005537.txt\r\n");
+		sim900a_gprs_send("我的名字是梁盛兑，我在XX地点遭遇到了车祸，请及时救援.\r\n");
 		for(photoNum = 0; photoNum < PHOTO_NUM;photoNum++ )
 		{
-			for(initCount = 0;initCount < 5 && !gprs_init("123.207.124.49","6666");initCount++)//GPRS初始化
-			{
-					printf("GPRS网络状态错误\r\n");//尝试重新初始化
-			}
 			ov2640_jpg_sendphoto();  
 			delay_ms(100);  
 		}	
+		sim900a_gprs_link_close();//关闭连接  
 	}
 }
 

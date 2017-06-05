@@ -10,6 +10,4 @@ u8 KEY_Scan(void);
 
 void TIM4_Init(u16 arr,u16 psc);
 
-
-
 #endif

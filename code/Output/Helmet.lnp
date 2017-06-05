@@ -40,6 +40,7 @@
 "..\..\output\sccb.o"
 "..\..\output\usart.o"
 "..\..\output\malloc.o"
+"..\..\output\uart5.o"
 "..\..\output\diskio.o"
 "..\..\output\ff.o"
 "..\..\output\delay.o"
